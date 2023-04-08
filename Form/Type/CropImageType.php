@@ -12,35 +12,36 @@ use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class CropImageType extends AbstractType
 {
-    private $helper;
+	private ImageHelper $helper;
 
-    public function __construct(ImageHelper $helper)
-    {
-        $this->helper = $helper;
-    }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add('imageData', HiddenType::class, [
-            'required' => false,
-        ]);
+	public function setHelper(ImageHelper $helper): void
+	{
+		$this->helper = $helper;
+	}
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $data = $event->getData();
+	public function buildForm(FormBuilderInterface $builder, array $options)
+	{
+		$builder->add('imageData', HiddenType::class, [
+			'required' => FALSE,
+		]);
 
-            if ($data['file']) {
-                $this->helper->cropImage($data['imageData'], $data['file']);
-            }
-        });
-    }
+		$builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+			$data = $event->getData();
 
-    public function getBlockPrefix()
-    {
-        return 'rares_image_crop_crop_image';
-    }
+			if ($data['file']) {
+				$this->helper->cropImage($data['imageData'], $data['file']);
+			}
+		});
+	}
 
-    public function getParent()
-    {
-        return VichImageType::class;
-    }
+	public function getBlockPrefix(): string
+	{
+		return 'rares_image_crop_crop_image';
+	}
+
+	public function getParent(): string
+	{
+		return VichImageType::class;
+	}
 }
